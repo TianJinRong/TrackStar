@@ -4,14 +4,18 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Issue;
+use app\models\User;
 use app\controllers\IssueController;
 use app\models\IssueListSearch;
 use app\models\Project;
 use app\models\ProjectSearch;
+use app\models\ProjectUserForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
+
 
 /**
  * ProjectController implements the CRUD actions for Project model.
@@ -26,6 +30,17 @@ class ProjectController extends Controller
                 'actions' => [
 					'delete' => ['post'],
 					'delete-issue' => ['post'],
+                ],
+            ],
+			'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'update', 'create', 'adduser'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'update', 'create', 'adduser'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -81,6 +96,36 @@ class ProjectController extends Controller
                 'model' => $model,
             ]);
         }
+    }
+	
+	public function actionAdduser($projectId)
+    {
+		$form = new ProjectUserForm();
+		$project = $this->findModel($projectId);
+		$form->project = $project;
+        if ($form->load(Yii::$app->request->post())) {
+			$form->project = $project;
+			if($form->validate())
+			{
+				// Display the message.
+				$session = Yii::$app->session;
+				$session->setFlash('addUserToProjectResult', $form->username.' has been added to the project.');
+				// echo $session->getFlash('addUserToProjectSuccess');
+				// return $this->redirect(['view', 'id' => $projectId]);
+				$form = new ProjectUserForm();
+				$form->project = $project;
+				
+			} else {
+				$session = Yii::$app->session;
+				$session->setFlash('addUserToProjectResult', $form->username.' failed to added to the project.');
+			}
+        } else {
+			
+        }
+		// Display the add user form.
+		return $this->render('adduser', [
+			'model' => $form,
+		]);
     }
 
     /**
