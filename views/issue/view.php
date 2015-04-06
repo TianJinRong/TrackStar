@@ -64,3 +64,26 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+
+<?php 
+// 列出评论列表
+echo $this->render('_comment', [
+		'comments' => $comments,
+	]); 
+?>
+
+
+<?php 
+// 添加comment的结果
+if(Yii::$app->session->hasFlash('addCommentResult'))
+{
+	echo Yii::$app->session->getFlash('addCommentResult');
+}
+?>
+
+<?php
+// 添加评论
+echo $this->render('_commentform', [
+	'model' => $newComment,
+]);
+?>

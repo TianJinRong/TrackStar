@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Issue;
 use app\models\Project;
+use app\models\Comment;
 use app\models\IssueSearch;
 use app\models\ProjectContextFilter;
 use yii\web\Controller;
@@ -75,8 +76,19 @@ class IssueController extends Controller
      */
     public function actionView($id)
     {
+		$issue = $this->findModel($id);
+		$comments = Comment::find()->where(['issue_id' => $id])->all();
+		$comment = new Comment();
+		$comment->issue_id = $id;
+		if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+			$session = Yii::$app->session;
+			$session->setFlash('addCommentResult','Comment has been added to the issue.');
+        }
+		
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $issue,
+			'comments' => $comments,
+			'newComment' => $comment,
         ]);
     }
 

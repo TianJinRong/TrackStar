@@ -33,7 +33,7 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['content', 'issue_id', 'create_time', 'create_user_id', 'update_time', 'update_user_id'], 'required'],
+            [['issue_id'], 'required'],
             [['content'], 'string'],
             [['issue_id', 'create_user_id', 'update_user_id'], 'integer'],
             [['create_time', 'update_time'], 'safe']

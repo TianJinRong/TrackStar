@@ -68,9 +68,7 @@ class ProjectController extends Controller
      */
     public function actionView($id)
     {
-		/* $this->findModel($id)->delete();
-        return $this->redirect(['index']);
-		 */
+		$this->authorizePower($id);
 		$issueSearchModel = new IssueListSearch();		
 		$issueDataProvider = $issueSearchModel->search(Yii::$app->request->queryParams, $id);
         return $this->render('view', [
@@ -100,6 +98,13 @@ class ProjectController extends Controller
 	
 	public function actionAdduser($projectId)
     {
+		// 检查当前用户是否有添加用户的权限
+		if(!Yii::$app->user->can('createUser'))
+		{
+			throw new NotFoundHttpException('你没有权限访问该页。');
+		}
+		
+		
 		$form = new ProjectUserForm();
 		$project = $this->findModel($projectId);
 		$form->project = $project;
@@ -175,4 +180,28 @@ class ProjectController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+	
+	/* 授权 */
+	protected function authorizePower($projectId)
+	{
+		// 读取当前用户在该项目中的角色
+		// 查找该用户是否存在
+        $userId = Yii::$app->user->id;
+		$user = User::findOne($userId);
+		$project = $this->findModel($projectId);
+		if (!$user) {
+			throw new NotFoundHttpException('The current user does not exist.');
+		} else if($project->isUserInProject($user)) {
+			// 授权
+			$rolenames = $project->userRolenames;
+			$auth = Yii::$app->authManager;
+			foreach($rolenames as $rolename) {
+				// 如果没有授权则授权给该用户
+				if(null === $auth->getAssignment($rolename, $user->id)) {
+					$role = $auth->getRole($rolename);
+					$auth->assign($role, $user->id);
+				}
+			}
+		}
+	}
 }

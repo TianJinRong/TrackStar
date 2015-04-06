@@ -17,7 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
 		<?= Html::a('Create Issue', ['issue/create', 'pid' => $model->id], ['class' => 'btn btn-success']) ?>
-		<?= Html::a('Add User', ['adduser', 'projectId' => $model->id], ['class' => 'btn btn-primary']) ?>
+		<?php 
+		// 检查当前用户是否有添加用户的权限
+		if(Yii::$app->user->can('createUser'))
+		{
+			echo Html::a('Add User', ['adduser', 'projectId' => $model->id], ['class' => 'btn btn-primary']);
+		}
+		?>
+		
+		<?= Html::a('Add User Test Button', ['adduser', 'projectId' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
@@ -98,5 +106,9 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'update_user_id',
         ],
     ]); ?>
+	
+	<?php 
+		var_dump(Yii::$app->user);
+	?>
 
 </div>

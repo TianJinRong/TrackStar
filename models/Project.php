@@ -93,8 +93,6 @@ class Project extends \yii\db\ActiveRecord
 		return $userArray;
 	}
 	
-	
-	
 	// 将本项目关联用户
 	public function associateUserToProject($user)
 	{
@@ -145,5 +143,17 @@ class Project extends \yii\db\ActiveRecord
 			'user_id' => $user->id
 		])->exists();		
 		return $isUserInProject;
+	}
+	
+	/* 获取当前用户在本项目中的角色 */
+	public function getUserRolenames()
+	{
+		$userId = Yii::$app->user->id;
+		$role = ProjectUserRole::find()->where([
+			'project_id' => $this->id,
+			'user_id' => $userId,
+		])->all();
+		$rolenames = ArrayHelper::getColumn($role, 'role');
+		return $rolenames;
 	}
 }

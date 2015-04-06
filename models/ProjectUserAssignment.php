@@ -33,7 +33,7 @@ class ProjectUserAssignment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['project_id', 'user_id', 'create_time', 'create_user_id', 'update_time', 'update_user_id'], 'required'],
+            [['project_id', 'user_id'], 'required'],
             [['project_id', 'user_id', 'create_user_id', 'update_user_id'], 'integer'],
             [['create_time', 'update_time'], 'safe']
         ];

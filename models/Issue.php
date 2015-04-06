@@ -97,6 +97,18 @@ class Issue extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'owner_id']);
     }
+	
+	/* 获取issue的所有评论 */
+	public function getComments()
+	{
+		return $this->hasMany(Comment::className(), ['issue_id' => 'id']);
+	}
+	
+	/* 获取issue的所有评论数 */
+	public function getCommentCount()
+	{
+		return $this->comments->count();
+	}
 
     /**
      * @return \yii\db\ActiveQuery
