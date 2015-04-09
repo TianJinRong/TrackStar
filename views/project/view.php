@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use app\components\RecentCommentsWidget;
 /* @var $this yii\web\View */
 /* @var $model app\models\Project */
 
@@ -106,6 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'update_user_id',
         ],
     ]); ?>
+
+	<?= RecentCommentsWidget::widget(['projectId' => $model->id]) ?>
 	
 	<?php 
 		var_dump(Yii::$app->user);

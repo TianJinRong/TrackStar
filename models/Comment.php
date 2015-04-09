@@ -63,4 +63,6 @@ class Comment extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Issue::className(), ['id' => 'issue_id']);
     }
+	
+
 }
